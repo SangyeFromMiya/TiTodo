@@ -1,0 +1,15 @@
+node_modules/
+.DS_Store
+dist/
+.next/
+out/
+.turbo/
+.vercel/
+.cache/
+coverage/
+*.log
+*.lock
+.env
+.env.*
+!.env.example
+vite.cache/

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todoist Clone</title>
+    <meta name="description" content="A pixel-perfect Todoist clone built with React, TypeScript, and Tailwind CSS" />
+    
+    <!-- Preload fonts for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Prevent FOUC (Flash of Unstyled Content) -->
+    <script>
+      // Dark mode detection to prevent flash
+      (function() {
+        const darkMode = localStorage.getItem('todo-dark-mode') === 'true';
+        if (darkMode) {
+          document.documentElement.classList.add('dark');
+        }
+        
+        // Language detection
+        const language = localStorage.getItem('todo-language') || 'en';
+        if (language === 'bo') {
+          document.body.className = 'lang-bo';
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

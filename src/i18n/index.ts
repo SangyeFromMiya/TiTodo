@@ -1,0 +1,168 @@
+export const translations = {
+  en: {
+    app: {
+      title: 'Todoist Clone',
+      addTask: '+ Add task',
+      addProject: 'Add Project',
+      projects: 'Projects',
+      inbox: 'Inbox',
+      today: 'Today',
+      upcoming: 'Upcoming',
+      categories: 'Categories',
+      allTasks: 'All Tasks',
+      personal: 'Personal',
+      work: 'Work',
+      completed: 'Completed',
+      task: 'task',
+      tasks: 'tasks',
+      selectProject: 'Select a project to view tasks',
+    },
+    task: {
+      addPlaceholder: 'Add a task...',
+      complete: 'Complete task',
+      created: 'Created',
+      priority: {
+        high: 'High Priority',
+        medium: 'Medium Priority', 
+        low: 'Low Priority',
+      },
+    },
+    project: {
+      name: 'Project Name',
+      description: 'Description',
+      deadline: 'Deadline',
+      noDeadline: 'No deadline',
+      create: 'Add Project',
+      edit: 'Edit Project',
+      delete: 'Delete Project',
+      deleteConfirm: 'Are you sure you want to delete this project?',
+      taskCount: '{count} tasks',
+    },
+    modal: {
+      close: 'Close',
+      save: 'Save',
+      cancel: 'Cancel',
+      delete: 'Delete',
+    },
+    user: {
+      profile: 'Profile',
+      settings: 'Settings',
+      logout: 'Logout',
+    },
+  },
+  zh: {
+    app: {
+      title: 'Todoist 克隆',
+      addTask: '+ 添加任务',
+      addProject: '添加项目',
+      projects: '项目',
+      inbox: '收件箱',
+      today: '今天',
+      upcoming: '即将到来',
+      categories: '分类',
+      allTasks: '全部任务',
+      personal: '个人',
+      work: '工作',
+      completed: '已完成',
+      task: '个任务',
+      tasks: '个任务',
+      selectProject: '选择一个项目查看任务',
+    },
+    task: {
+      addPlaceholder: '添加一个任务...',
+      complete: '完成任务',
+      created: '创建于',
+      priority: {
+        high: '高优先级',
+        medium: '中优先级',
+        low: '低优先级',
+      },
+    },
+    project: {
+      name: '项目名称',
+      description: '描述',
+      deadline: '截止日期',
+      noDeadline: '无截止日期',
+      create: '添加项目',
+      edit: '编辑项目',
+      delete: '删除项目',
+      deleteConfirm: '确定要删除这个项目吗？',
+      taskCount: '{count} 个任务',
+    },
+    modal: {
+      close: '关闭',
+      save: '保存',
+      cancel: '取消',
+      delete: '删除',
+    },
+    user: {
+      profile: '个人资料',
+      settings: '设置',
+      logout: '退出登录',
+    },
+  },
+  bo: {
+    app: {
+      title: 'ལས་ཀའི་ཐོ་གཞུང་།',
+      addTask: '+ ལས་ཀ་ཁ་སྐོང་།',
+      addProject: 'ལས་གཞི་ཁ་སྐོང་།',
+      projects: 'ལས་གཞི།',
+      inbox: 'འཛིན་བྱང་།',
+      today: 'དེ་རིང་།',
+      upcoming: 'ཉེ་སྔོན་དུ་འོང་བ།',
+      categories: 'དབྱེ་བསྡུས།',
+      allTasks: 'ལས་ཀ་ཆ་ཚང་།',
+      personal: 'རང་མིང་།',
+      work: 'ལས་ཀ།',
+      completed: 'མཇུག་སྒྲིལ་བ།',
+      task: 'ལས་ཀ།',
+      tasks: 'ལས་ཀ།',
+      selectProject: 'ལས་གཞི་ཞིག་འདེམས་ནས་ལས་ཀར་ལྟ་བ།',
+    },
+    task: {
+      addPlaceholder: 'ལས་ཀ་ཞིག་ཁ་སྐོང་།',
+      complete: 'ལས་ཀ་མཇུག་སྒྲིལ།',
+      created: 'བཟོས་པའི་ཚེས།',
+      priority: {
+        high: 'གལ་ཆེ།',
+        medium: 'འབྲིང་པོ།',
+        low: 'དམའ་པོ།',
+      },
+    },
+    project: {
+      name: 'ལས་གཞིའི་མིང་།',
+      description: 'ངོ་སྤྲོད།',
+      deadline: 'དུས་འགགས་ཚེས།',
+      noDeadline: 'དུས་འགགས་མེད།',
+      create: 'ལས་གཞི་ཁ་སྐོང་།',
+      edit: 'ལས་གཞི་བསྒྱུར་བཅོས།',
+      delete: 'ལས་གཞི་བཏོན་གསུབ།',
+      deleteConfirm: 'ཁྱེད་ཀྱིས་ངེས་པར་ལས་གཞི་འདི་བཏོན་འདོད་དམ།',
+      taskCount: 'ལས་ཀ་ {count} ཡོད།',
+    },
+    modal: {
+      close: 'ཁ་རྒྱག',
+      save: 'ཉར་ཚགས།',
+      cancel: 'ཕྱིར་འཐེན།',
+      delete: 'བཏོན་གསུབ།',
+    },
+    user: {
+      profile: 'མི་སྒེར་གནས་ཚུལ།',
+      settings: 'སྒྲིག་འགོད།',
+      logout: 'ཕྱིར་ཐོན།',
+    },
+  },
+};
+
+export type Language = keyof typeof translations;
+
+export function getTranslation(language: Language, key: string): string {
+  const keys = key.split('.');
+  let value: any = translations[language];
+  
+  for (const k of keys) {
+    value = value?.[k];
+  }
+  
+  return value || key;
+}

@@ -1,0 +1,257 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jomolhari&display=swap');
+
+@layer base {
+  * {
+    @apply border-gray-200;
+  }
+  
+  body {
+    @apply font-sans antialiased bg-gray-25 text-gray-900 transition-colors duration-250;
+  }
+  
+  .dark body {
+    @apply bg-gray-900 text-gray-100;
+  }
+
+  /* Tibetan language special handling */
+  .lang-bo {
+    @apply leading-loose;
+    font-family: 'Jomolhari', system-ui, serif;
+  }
+  
+  .lang-bo body,
+  .lang-bo * {
+    @apply leading-loose;
+  }
+  
+  .lang-bo .task-item,
+  .lang-bo .project-item,
+  .lang-bo input,
+  .lang-bo textarea {
+    @apply py-3;
+    line-height: 1.8 !important;
+  }
+}
+
+@layer components {
+  /* Todoist-style button */
+  .btn-primary {
+    background-color: #DC4C3E;
+    @apply hover:opacity-90 text-white font-medium py-2.5 px-5 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    --tw-ring-color: #DC4C3E;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2.5 px-5 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+  }
+  
+  .btn-ghost {
+    @apply hover:bg-gray-100 text-gray-600 font-medium py-2 px-4 rounded-md transition-colors duration-200;
+  }
+  
+  /* Todoist-style checkbox (circle) */
+  .checkbox-circle {
+    @apply w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 cursor-pointer;
+  }
+  
+  .checkbox-high {
+    border-color: #DC4C3E;
+  }
+  
+  .checkbox-high:hover {
+    border-color: #DC4C3E;
+  }
+  
+  .checkbox-medium {
+    border-color: #EAB308;
+  }
+  
+  .checkbox-medium:hover {
+    border-color: #EAB308;
+  }
+  
+  .checkbox-low {
+    border-color: #6B7280;
+  }
+  
+  .checkbox-low:hover {
+    border-color: #6B7280;
+  }
+  
+  .checkbox-checked {
+    background-color: #DC4C3E;
+    border-color: #DC4C3E;
+  }
+  
+  /* Task item styling */
+  .task-item {
+    @apply flex items-center gap-3 px-4 py-3 border-b border-gray-100 hover:bg-gray-25 transition-colors duration-150;
+  }
+  
+  .dark .task-item {
+    @apply border-gray-700 hover:bg-gray-800;
+  }
+  
+  /* Project item styling */
+  .project-item {
+    @apply flex items-center justify-between px-4 py-2.5 rounded-lg hover:bg-gray-25 transition-colors duration-150 cursor-pointer;
+  }
+  
+  .dark .project-item {
+    @apply hover:bg-gray-800;
+  }
+  
+  .project-item.active {
+    @apply bg-gray-25 border-l-4;
+    border-color: #DC4C3E;
+  }
+  
+  .dark .project-item.active {
+    @apply bg-gray-800;
+  }
+  
+  /* Sidebar styling */
+  .sidebar {
+    @apply w-64 bg-white border-r border-gray-200 h-full flex flex-col;
+  }
+  
+  .dark .sidebar {
+    @apply bg-gray-900 border-gray-700;
+  }
+  
+  /* Main content area */
+  .main-content {
+    @apply flex-1 bg-gray-25 overflow-hidden;
+  }
+  
+  .dark .main-content {
+    @apply bg-gray-900;
+  }
+  
+  /* Modal styling */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50;
+  }
+  
+  .modal-content {
+    @apply bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md mx-4 transform transition-all duration-300;
+  }
+  
+  .dark .modal-content {
+    @apply bg-gray-800;
+  }
+  
+  /* Input styling */
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-200;
+    --tw-ring-color: #DC4C3E;
+  }
+  
+  .dark .input-field {
+    @apply bg-gray-800 text-gray-100 border-gray-600 placeholder-gray-400;
+  }
+  
+  /* Priority indicators */
+  .priority-indicator {
+    @apply w-2 h-2 rounded-full;
+  }
+  
+  .priority-indicator.high {
+    background-color: #DC4C3E;
+  }
+  
+  .priority-indicator.medium {
+    background-color: #EAB308;
+  }
+  
+  .priority-indicator.low {
+    background-color: #6B7280;
+  }
+  
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-1.5;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
+  }
+  
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-600;
+  }
+  
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
+}
+
+@layer utilities {
+  /* Truncate text with ellipsis */
+  .text-truncate {
+    @apply truncate;
+  }
+  
+  /* Safe area padding for mobile */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Dark mode specific styles */
+.dark {
+  color-scheme: dark;
+}
+
+/* Animation for task completion */
+@keyframes taskComplete {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateX(-10px) scale(0.98);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100%) scale(0.95);
+  }
+}
+
+.task-completing {
+  animation: taskComplete 0.3s ease-out forwards;
+}
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Focus visible styles */
+.focus-visible-ring {
+  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  --tw-ring-color: #DC4C3E;
+}
