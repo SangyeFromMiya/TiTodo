@@ -10,12 +10,14 @@ export default {
       colors: {
         // Todoist color palette
         brand: {
-          red: '#DC4C3E',
-          50: '#FEF2F2',
-          100: '#FEE2E2', 
-          500: '#DC4C3E',
-          600: '#B91C1C',
-          700: '#991B1B',
+          red: {
+            DEFAULT: '#DC4C3E',
+            50: '#FEF2F2',
+            100: '#FEE2E2', 
+            500: '#DC4C3E',
+            600: '#B91C1C',
+            700: '#991B1B',
+          },
         },
         gray: {
           25: '#FAFAFA',

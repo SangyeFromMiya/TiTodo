@@ -36,22 +36,9 @@ export const AppLayout: React.FC = () => {
     // Apply language class to body for Tibetan special handling
     document.body.className = language === 'bo' ? 'lang-bo' : '';
     
-    // Set initial current project when categories are loaded
-    if (categories.length > 0 && !currentProject) {
-      const firstProject = categories[0].projects[0] || null;
-      setCurrentProject(firstProject);
-      if (firstProject) {
-        setCurrentFilter(firstProject.categoryId as TaskFilter);
-      }
-    }
-  }, [language, categories, currentProject]);
-
-  
-  // Get filtered tasks based on current filter (this might not be needed anymore)
-  const getFilteredTasks = () => {
-    if (!currentProject) return [];
-    return currentProject.tasks;
-  };
+    // We no longer auto-select the first project.
+    // Instead, if no project is selected, we'll show the "All Tasks" view.
+  }, [language]);
 
   const handleProjectSelect = (project: Project) => {
     setCurrentProject(project);
@@ -149,8 +136,31 @@ export const AppLayout: React.FC = () => {
     }
   };
 
+  // Helper to find task location
+  const findTaskLocation = (taskId: string) => {
+    for (const cat of categories) {
+      for (const proj of cat.projects) {
+        const task = proj.tasks.find(t => t.id === taskId);
+        if (task) {
+          return { categoryId: cat.id, projectId: proj.id, task };
+        }
+      }
+    }
+    return null;
+  };
+
   const handleAddTask = (title: string) => {
-    if (!currentProject) return;
+    // If a project is selected, add to it.
+    // If no project is selected (All Tasks view), add to the first available project.
+    let targetProjectId = currentProject?.id;
+    let targetCategoryId = currentProject?.categoryId;
+
+    if (!targetProjectId && categories.length > 0 && categories[0].projects.length > 0) {
+        targetCategoryId = categories[0].id;
+        targetProjectId = categories[0].projects[0].id;
+    }
+
+    if (!targetProjectId || !targetCategoryId) return;
 
     const newTask: Task = {
       id: generateId(),
@@ -161,47 +171,76 @@ export const AppLayout: React.FC = () => {
       updatedAt: new Date(),
     };
 
-    addTask(currentProject.categoryId, currentProject.id, newTask);
+    addTask(targetCategoryId, targetProjectId, newTask);
     
-    setCurrentProject(prev =>
-      prev ? { ...prev, tasks: [...prev.tasks, newTask], updatedAt: new Date() } : null
-    );
+    // If we are in specific project view, update local state
+    if (currentProject && currentProject.id === targetProjectId) {
+        setCurrentProject(prev =>
+        prev ? { ...prev, tasks: [...prev.tasks, newTask], updatedAt: new Date() } : null
+        );
+    }
   };
 
   const handleToggleTask = (taskId: string) => {
-    if (!currentProject) return;
+    const location = findTaskLocation(taskId);
+    if (!location) return;
 
-    const task = currentProject.tasks.find(t => t.id === taskId);
-    if (!task) return;
+    const { categoryId, projectId, task } = location;
 
     updateTask(
-      currentProject.categoryId,
-      currentProject.id,
+      categoryId,
+      projectId,
       taskId,
       { completed: !task.completed }
     );
 
-    // Update local state
-    setCurrentProject(prev => prev ? {
-      ...prev,
-      tasks: prev.tasks.map(task =>
-        task.id === taskId ? { ...task, completed: !task.completed, updatedAt: new Date() } : task
-      )
-    } : null);
+    // Update local state if we are viewing a specific project
+    if (currentProject && currentProject.id === projectId) {
+        setCurrentProject(prev => prev ? {
+        ...prev,
+        tasks: prev.tasks.map(t =>
+            t.id === taskId ? { ...t, completed: !t.completed, updatedAt: new Date() } : t
+        )
+        } : null);
+    }
   };
 
   const handleDeleteTask = (taskId: string) => {
-    if (!currentProject) return;
+    const location = findTaskLocation(taskId);
+    if (!location) return;
 
-    deleteTask(currentProject.categoryId, currentProject.id, taskId);
+    const { categoryId, projectId } = location;
 
-    // Update local state
-    setCurrentProject(prev => prev ? {
-      ...prev,
-      tasks: prev.tasks.filter(task => task.id !== taskId),
-      updatedAt: new Date()
-    } : null);
+    deleteTask(categoryId, projectId, taskId);
+
+    // Update local state if we are viewing a specific project
+    if (currentProject && currentProject.id === projectId) {
+        setCurrentProject(prev => prev ? {
+        ...prev,
+        tasks: prev.tasks.filter(t => t.id !== taskId),
+        updatedAt: new Date()
+        } : null);
+    }
   };
+
+  // Construct the "All Tasks" project view
+  const getAllTasksProject = (): Project => {
+      const allTasks = categories.flatMap(c => c.projects.flatMap(p => p.tasks));
+      // Sort by creation date desc
+      allTasks.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      
+      return {
+          id: 'all-tasks',
+          name: 'All Tasks', 
+          description: 'Overview of all your tasks',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          tasks: allTasks,
+          categoryId: 'all'
+      };
+  };
+
+  const projectToShow = currentProject || getAllTasksProject();
 
   return (
     <div className={`h-screen flex overflow-hidden bg-white dark:bg-gray-900 ${language === 'bo' ? 'lang-bo' : ''}`}>
@@ -264,14 +303,11 @@ export const AppLayout: React.FC = () => {
       <div className="flex-1 flex flex-col">
         {!isLoading && (
           <TaskList
-            project={currentProject ? {
-              ...currentProject,
-              tasks: getFilteredTasks()
-            } : null}
+            project={projectToShow}
             onAddTask={handleAddTask}
             onToggleTask={handleToggleTask}
             onDeleteTask={handleDeleteTask}
-            filter={currentFilter}
+            filter={currentProject ? currentFilter : 'all'}
           />
         )}
       </div>

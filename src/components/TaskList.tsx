@@ -72,7 +72,8 @@ export const TaskList: React.FC<TaskListProps> = ({
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6">
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {filter === 'all' ? t('app.allTasks') : 
+            {project.id === 'all-tasks' ? t('app.allTasks') :
+             filter === 'all' ? t('app.allTasks') : 
              filter === 'personal' ? t('app.personal') : 
              filter === 'work' ? t('app.work') : 
              filter === 'completed' ? t('app.completed') : 
