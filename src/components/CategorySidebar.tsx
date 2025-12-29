@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, ChevronDown, ChevronRight, Calendar, Trash2, Edit } from 'lucide-react';
+import { X, Plus, ChevronDown, ChevronRight, Calendar, Trash2, Edit, LogOut } from 'lucide-react';
 import { Category, Project, TaskFilter } from '../types';
 import { getTaskCount, cn, formatDate } from '../utils';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
 
 interface CategorySidebarProps {
   categories: Category[];
@@ -45,12 +46,27 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
   onAddProject,
   onEditProject,
   onDeleteProject,
-    isOpen,
+  isOpen,
   onToggle,
   className,
 }) => {
   const { t } = useLanguage();
-  const [expandedCategories, setExpandedCategories] = useState<string[]>(['personal', 'work']);
+  const { user, signOut } = useAuth();
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+  
+  // Update expandedCategories when categories are loaded to include all category IDs
+  React.useEffect(() => {
+    if (categories.length > 0) {
+      setExpandedCategories(prev => {
+         const newIds = categories.map(c => c.id);
+         // Merge unique IDs
+         return Array.from(new Set([...prev, ...newIds]));
+      });
+    }
+  }, [categories]);
+
+  const userInitials = user?.email ? user.email.substring(0, 2).toUpperCase() : 'GU';
+  const displayName = user?.email || 'Guest User';
 
   const toggleCategory = (categoryId: string) => {
     setExpandedCategories(prev =>
@@ -60,7 +76,17 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
     );
   };
 
-  
+  const getCategoryName = (category: Category) => {
+    // Try to translate standard categories
+    if (['Personal', 'Work'].includes(category.name)) {
+      const key = `app.${category.name.toLowerCase()}`;
+      const translation = t(key);
+      // If translation exists and is different from key, use it
+      if (translation !== key) return translation;
+    }
+    return category.name;
+  };
+
   return (
     <>
       {/* Mobile backdrop */}
@@ -89,20 +115,31 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
         {/* Header with User Info */}
         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white font-semibold">
-                SN
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white font-semibold flex-shrink-0">
+                {userInitials}
               </div>
-              <div>
-                <div className="font-medium text-gray-900 dark:text-gray-100">SangyeNorbu</div>
+              <div className="min-w-0">
+                <div className="font-medium text-gray-900 dark:text-gray-100 truncate" title={displayName}>
+                  {displayName}
+                </div>
               </div>
             </div>
-            <button
-              onClick={onToggle}
-              className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 lg:hidden transition-colors duration-150"
-            >
-              <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => signOut()}
+                className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-150"
+                title="Sign out"
+              >
+                <LogOut className="w-5 h-5" />
+              </button>
+              <button
+                onClick={onToggle}
+                className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 lg:hidden transition-colors duration-150"
+              >
+                <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -129,7 +166,7 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-lg">{category.icon}</span>
-                      <span className="font-medium">{t(`app.${category.id}`)}</span>
+                      <span className="font-medium">{getCategoryName(category)}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       {categoryTaskCount > 0 && (
@@ -270,7 +307,7 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
         {/* Footer */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-700">
           <div className="text-sm text-gray-400 dark:text-gray-500">
-            Norbu's Todo
+            TiTodo
           </div>
         </div>
       </motion.div>

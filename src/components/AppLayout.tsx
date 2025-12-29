@@ -20,13 +20,11 @@ export const AppLayout: React.FC = () => {
     updateProject,
     deleteProject,
     addTask,
-    updateTask,
+   updateTask,
     deleteTask,
     exportData,
     importData,
-    clearAllData,
   } = usePersistentData();
-
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentFilter, setCurrentFilter] = useState<TaskFilter>('personal');
@@ -220,7 +218,6 @@ export const AppLayout: React.FC = () => {
         <TopBar
           onExportData={exportData}
           onImportData={importData}
-          onResetData={clearAllData}
           lastSaved={lastSaved}
         />
       </div>

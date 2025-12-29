@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe, Sun, Moon, Download, Upload, RotateCcw } from 'lucide-react';
+import { Globe, Sun, Moon, Download, Upload } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { Language } from '../types';
@@ -7,14 +7,12 @@ import { Language } from '../types';
 interface TopBarProps {
   onExportData?: () => void;
   onImportData?: (file: File) => Promise<void>;
-  onResetData?: () => void;
   lastSaved?: Date | null;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
   onExportData,
   onImportData,
-  onResetData,
   lastSaved,
 }) => {
   const { language, setLanguage, t } = useLanguage();
@@ -33,12 +31,6 @@ export const TopBar: React.FC<TopBarProps> = ({
         // Clear input
         e.target.value = '';
       });
-    }
-  };
-
-  const handleReset = () => {
-    if (window.confirm('确定要清除所有数据吗？此操作不可恢复。') || window.confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
-      onResetData?.();
     }
   };
 
@@ -65,15 +57,6 @@ export const TopBar: React.FC<TopBarProps> = ({
         >
           <Download className="w-4 h-4 text-gray-600 dark:text-gray-300" />
         </button>
-
-        {/* Reset Button */}
-        <button
-          onClick={handleReset}
-          className="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-200"
-          title="Reset all data"
-        >
-          <RotateCcw className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-        </button>
       </div>
 
       {/* Last Saved Indicator */}
@@ -93,9 +76,6 @@ export const TopBar: React.FC<TopBarProps> = ({
         ) : (
           <Moon className="w-4 h-4 text-gray-600" />
         )}
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300 hidden sm:block">
-          {darkMode ? t('user.settings') : t('user.settings')}
-        </span>
       </button>
 
       {/* Language Selector */}
