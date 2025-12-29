@@ -11,7 +11,7 @@ export function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { theme } = useTheme();
+  const { darkMode } = useTheme();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +34,7 @@ export function Login() {
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 lg:px-8 ${theme === 'dark' ? 'dark' : ''}`}>
+    <div className={`min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 lg:px-8 ${darkMode ? 'dark' : ''}`}>
       <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">

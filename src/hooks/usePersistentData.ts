@@ -8,7 +8,7 @@ export function usePersistentData() {
   const { user } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [lastSaved] = useState<Date | null>(null);
 
   // Load data from Supabase
   useEffect(() => {
@@ -98,22 +98,6 @@ export function usePersistentData() {
     loadData();
   }, [user]);
 
-  const createDefaultCategories = async (userId: string) => {
-    const defaults = [
-      { name: 'Personal', icon: '👤', color: '#DC4C3E' },
-      { name: 'Work', icon: '💼', color: '#2563EB' },
-    ];
-
-    for (const d of defaults) {
-      await supabase.from('categories').insert({
-        user_id: userId,
-        name: d.name,
-        icon: d.icon,
-        color: d.color
-      });
-    }
-    // Note: This simple default creation doesn't add sub-projects, but it's a start.
-  };
 
   // Add new category
   const addCategory = useCallback(async (category: Category) => {
@@ -360,7 +344,7 @@ export function usePersistentData() {
   const importData = useCallback(async (file: File): Promise<void> => {
     // Reading file and bulk inserting... complex, maybe skip for now or just impl basic
     // For now, let's just use the LocalStorageService helper to parse, but insert to Supabase
-    const success = await LocalStorageService.importFromJSON(file); // This parses and validates
+    await LocalStorageService.importFromJSON(file); // This parses and validates
     // But wait, LocalStorageService.importFromJSON returns boolean and might try to save to LS
     // Let's rely on the parsing logic if exposed, otherwise skip import for this MVP
     console.warn("Import not fully implemented for Supabase backend yet");
@@ -383,6 +367,22 @@ export function usePersistentData() {
     exportData,
     importData,
   };
+}
+
+async function createDefaultCategories(userId: string) {
+  const defaults = [
+    { name: 'Personal', icon: '👤', color: '#DC4C3E' },
+    { name: 'Work', icon: '💼', color: '#2563EB' },
+  ];
+
+  for (const d of defaults) {
+    await supabase.from('categories').insert({
+      user_id: userId,
+      name: d.name,
+      icon: d.icon,
+      color: d.color
+    });
+  }
 }
 
 function getDefaultCategories(): Category[] {

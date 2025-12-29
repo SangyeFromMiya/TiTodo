@@ -15,7 +15,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   onImportData,
   lastSaved,
 }) => {
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const { darkMode, toggleDarkMode } = useTheme();
 
   const languages = [
