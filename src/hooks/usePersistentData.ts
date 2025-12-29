@@ -384,26 +384,3 @@ async function createDefaultCategories(userId: string) {
     });
   }
 }
-
-function getDefaultCategories(): Category[] {
-  return [
-    {
-      id: 'personal',
-      name: 'Personal',
-      icon: '👤',
-      color: '#DC4C3E',
-      projects: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: 'work',
-      name: 'Work',
-      icon: '💼',
-      color: '#2563EB',
-      projects: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ];
-}
