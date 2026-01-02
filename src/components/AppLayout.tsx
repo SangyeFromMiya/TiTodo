@@ -306,6 +306,17 @@ export const AppLayout: React.FC = () => {
             project={projectToShow}
             onAddTask={handleAddTask}
             onToggleTask={handleToggleTask}
+            onUpdateTask={(taskId, title) => {
+              const location = findTaskLocation(taskId);
+              if (!location) return;
+              updateTask(location.categoryId, location.projectId, taskId, { title });
+              if (currentProject?.id === location.projectId) {
+                setCurrentProject(prev => prev ? {
+                  ...prev,
+                  tasks: prev.tasks.map(t => t.id === taskId ? { ...t, title, updatedAt: new Date() } : t)
+                } : null);
+              }
+            }}
             onDeleteTask={handleDeleteTask}
             filter={currentProject ? currentFilter : 'all'}
           />

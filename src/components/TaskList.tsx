@@ -9,6 +9,7 @@ interface TaskListProps {
   project: Project | null;
   onAddTask: (title: string) => void;
   onToggleTask: (taskId: string) => void;
+  onUpdateTask: (taskId: string, title: string) => void;
   onDeleteTask: (taskId: string) => void;
   filter?: TaskFilter;
 }
@@ -24,16 +25,43 @@ const taskVariants = {
   },
 };
 
+import { Edit2, X, Check } from 'lucide-react';
+
+// ... existing imports
+
 export const TaskList: React.FC<TaskListProps> = ({
   project,
   onAddTask,
   onToggleTask,
+  onUpdateTask,
   onDeleteTask,
   filter = 'all',
 }) => {
   const { t } = useLanguage();
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState('');
+  
+  // Editing state
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
+
+  const startEditing = (task: { id: string, title: string }) => {
+    setEditingTaskId(task.id);
+    setEditingTitle(task.title);
+  };
+
+  const cancelEditing = () => {
+    setEditingTaskId(null);
+    setEditingTitle('');
+  };
+
+  const saveEditing = () => {
+    if (editingTaskId && editingTitle.trim()) {
+      onUpdateTask(editingTaskId, editingTitle.trim());
+      setEditingTaskId(null);
+      setEditingTitle('');
+    }
+  };
 
   const handleAddTask = () => {
     if (newTaskTitle.trim()) {
@@ -110,13 +138,61 @@ export const TaskList: React.FC<TaskListProps> = ({
                   priority={task.priority}
                   onChange={() => handleTaskComplete(task.id)}
                 />
-                <div className="flex-1">
-                  <div className="text-gray-900 dark:text-gray-100 font-medium">
-                    {task.title}
-                  </div>
-                  <div className="text-sm text-gray-400 dark:text-gray-500 mt-1">
-                    {t('task.created')} {formatDate(task.createdAt)}
-                  </div>
+                <div className="flex-1 group/task relative">
+                  {editingTaskId === task.id ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={editingTitle}
+                        onChange={(e) => setEditingTitle(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            saveEditing();
+                          } else if (e.key === 'Escape') {
+                            cancelEditing();
+                          }
+                        }}
+                        onBlur={saveEditing}
+                        className="flex-1 bg-white dark:bg-gray-700 border border-brand-red-500 rounded px-2 py-1 outline-none text-gray-900 dark:text-gray-100"
+                        autoFocus
+                      />
+                      <button
+                        onClick={saveEditing}
+                        className="p-1 text-green-600 hover:bg-green-50 rounded"
+                      >
+                        <Check className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={cancelEditing}
+                        className="p-1 text-red-600 hover:bg-red-50 rounded"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div 
+                          className="text-gray-900 dark:text-gray-100 font-medium cursor-text"
+                          onDoubleClick={() => startEditing(task)}
+                        >
+                          {task.title}
+                        </div>
+                        <div className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+                          {t('task.created')} {formatDate(task.createdAt)}
+                        </div>
+                      </div>
+                      
+                      {/* Edit Button (visible on hover) */}
+                      <button
+                        onClick={() => startEditing(task)}
+                        className="opacity-0 group-hover/task:opacity-100 p-1.5 text-gray-400 hover:text-brand-red-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-all duration-200"
+                        title={t('project.edit')}
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             ))}
