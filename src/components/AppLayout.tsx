@@ -10,7 +10,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { usePersistentData } from '../hooks/usePersistentData';
 
 export const AppLayout: React.FC = () => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   
   const {
     categories,
@@ -231,16 +231,57 @@ export const AppLayout: React.FC = () => {
   // Construct the "All Tasks" project view
   const getAllTasksProject = (): Project => {
       const allTasks = categories.flatMap(c => c.projects.flatMap(p => p.tasks));
-      // Sort by creation date desc
-      allTasks.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      
+      // Filter based on summary type if selected
+      let filteredTasks = allTasks;
+      let title = t('app.allTasks');
+      let description = 'Overview of all your tasks'; 
+
+      // Re-calculate title based on current language
+      if (currentFilter === 'weekly-summary') {
+        title = t('app.weeklySummary');
+        description = t('app.weeklySummaryDesc');
+      }
+      else if (currentFilter === 'monthly-summary') {
+        title = t('app.monthlySummary');
+        description = t('app.monthlySummaryDesc');
+      }
+      else if (currentFilter === 'yearly-summary') {
+        title = t('app.yearlySummary');
+        description = t('app.yearlySummaryDesc');
+      }
+      else if (currentFilter === 'all') {
+        title = t('app.allTasks');
+      }
+
+      if (currentFilter === 'weekly-summary' || currentFilter === 'monthly-summary' || currentFilter === 'yearly-summary') {
+          const now = new Date();
+          const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+          const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+
+          // Only show completed tasks for summaries
+          filteredTasks = allTasks.filter(t => t.completed);
+
+          if (currentFilter === 'weekly-summary') {
+              filteredTasks = filteredTasks.filter(t => t.updatedAt >= oneWeekAgo);
+          } else if (currentFilter === 'monthly-summary') {
+              filteredTasks = filteredTasks.filter(t => t.updatedAt >= oneMonthAgo);
+          } else if (currentFilter === 'yearly-summary') {
+              filteredTasks = filteredTasks.filter(t => t.updatedAt >= oneYearAgo);
+          }
+      }
+
+      // Sort by completion/update date desc
+      filteredTasks.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
       
       return {
-          id: 'all-tasks',
-          name: 'All Tasks', 
-          description: 'Overview of all your tasks',
+          id: currentFilter.includes('summary') ? currentFilter : 'all-tasks',
+          name: title, 
+          description: description,
           createdAt: new Date(),
           updatedAt: new Date(),
-          tasks: allTasks,
+          tasks: filteredTasks,
           categoryId: 'all'
       };
   };

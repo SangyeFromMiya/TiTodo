@@ -34,7 +34,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   onAddTask,
   onToggleTask,
   onUpdateTask,
-  onDeleteTask,
+  // onDeleteTask, // Temporarily unused
   filter = 'all',
 }) => {
   const { t } = useLanguage();
@@ -72,10 +72,6 @@ export const TaskList: React.FC<TaskListProps> = ({
   };
 
   const handleTaskComplete = (taskId: string) => {
-    // Mark for deletion after animation
-    setTimeout(() => {
-      onDeleteTask(taskId);
-    }, 300);
     onToggleTask(taskId);
   };
 
@@ -101,6 +97,9 @@ export const TaskList: React.FC<TaskListProps> = ({
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {project.id === 'all-tasks' ? t('app.allTasks') :
+             project.id === 'weekly-summary' ? t('app.weeklySummary') :
+             project.id === 'monthly-summary' ? t('app.monthlySummary') :
+             project.id === 'yearly-summary' ? t('app.yearlySummary') :
              filter === 'all' ? t('app.allTasks') : 
              filter === 'personal' ? t('app.personal') : 
              filter === 'work' ? t('app.work') : 

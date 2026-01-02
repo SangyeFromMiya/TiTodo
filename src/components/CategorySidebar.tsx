@@ -151,7 +151,7 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
           {/* Summary Section */}
           <div className="mb-6 space-y-1">
             <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-              Summaries
+              {t('app.summaries')}
             </div>
             
             <button
@@ -166,7 +166,7 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
               }`}
             >
               <LayoutList className="w-5 h-5" />
-              <span>Weekly Summary</span>
+              <span>{t('app.weeklySummary')}</span>
             </button>
 
             <button
@@ -181,7 +181,7 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
               }`}
             >
               <CalendarDays className="w-5 h-5" />
-              <span>Monthly Summary</span>
+              <span>{t('app.monthlySummary')}</span>
             </button>
 
             <button
@@ -196,7 +196,7 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
               }`}
             >
               <CalendarRange className="w-5 h-5" />
-              <span>Yearly Summary</span>
+                 <span>{t('app.yearlySummary')}</span>
             </button>
           </div>
 
