@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, ChevronDown, ChevronRight, Calendar, Trash2, Edit, LogOut } from 'lucide-react';
+import { X, Plus, ChevronDown, ChevronRight, Calendar, Trash2, Edit, LogOut, LayoutList, CalendarRange, CalendarDays } from 'lucide-react';
 import { Category, Project, TaskFilter } from '../types';
 import { getTaskCount, cn, formatDate } from '../utils';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -17,6 +17,7 @@ interface CategorySidebarProps {
   isOpen: boolean;
   onToggle: () => void;
   className?: string;
+  onSelectSummary: (type: 'weekly-summary' | 'monthly-summary' | 'yearly-summary') => void;
 }
 
 const sidebarVariants = {
@@ -49,6 +50,7 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
   isOpen,
   onToggle,
   className,
+  onSelectSummary,
 }) => {
   const { t } = useLanguage();
   const { user, signOut } = useAuth();
@@ -145,6 +147,59 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
 
         {/* Categories with Projects */}
         <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
+          
+          {/* Summary Section */}
+          <div className="mb-6 space-y-1">
+            <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Summaries
+            </div>
+            
+            <button
+              onClick={() => {
+                onSelectSummary('weekly-summary');
+                if (window.innerWidth < 1024) onToggle();
+              }}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-150 ${
+                currentFilter === 'weekly-summary'
+                  ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-medium'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+              }`}
+            >
+              <LayoutList className="w-5 h-5" />
+              <span>Weekly Summary</span>
+            </button>
+
+            <button
+              onClick={() => {
+                onSelectSummary('monthly-summary');
+                if (window.innerWidth < 1024) onToggle();
+              }}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-150 ${
+                currentFilter === 'monthly-summary'
+                  ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-medium'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+              }`}
+            >
+              <CalendarDays className="w-5 h-5" />
+              <span>Monthly Summary</span>
+            </button>
+
+            <button
+              onClick={() => {
+                onSelectSummary('yearly-summary');
+                if (window.innerWidth < 1024) onToggle();
+              }}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-150 ${
+                currentFilter === 'yearly-summary'
+                  ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-medium'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+              }`}
+            >
+              <CalendarRange className="w-5 h-5" />
+              <span>Yearly Summary</span>
+            </button>
+          </div>
+
           <div className="space-y-2">
             {categories.map((category) => {
               const isExpanded = expandedCategories.includes(category.id);

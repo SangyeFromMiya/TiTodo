@@ -38,7 +38,7 @@ export interface User {
 
 export type Language = 'en' | 'zh' | 'bo';
 
-export type TaskFilter = 'personal' | 'work' | 'all' | 'completed';
+export type TaskFilter = 'personal' | 'work' | 'all' | 'completed' | 'weekly-summary' | 'monthly-summary' | 'yearly-summary';
 
 export interface AppState {
   user: User | null;

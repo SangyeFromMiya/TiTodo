@@ -46,6 +46,11 @@ export const AppLayout: React.FC = () => {
     setCurrentFilter(project.categoryId as TaskFilter);
   };
 
+  const handleSummarySelect = (type: 'weekly-summary' | 'monthly-summary' | 'yearly-summary') => {
+    setCurrentFilter(type);
+    setCurrentProject(null); // Clear current project to show summary view
+  };
+
   const handleAddProject = (categoryId: string) => {
     setNewProjectCategoryId(categoryId);
     setEditingProject(null);
@@ -271,6 +276,7 @@ export const AppLayout: React.FC = () => {
           onAddProject={handleAddProject}
           onEditProject={handleEditProject}
           onDeleteProject={handleDeleteProject}
+          onSelectSummary={handleSummarySelect}
           isOpen={true}
           onToggle={() => {}}
         />
@@ -285,6 +291,7 @@ export const AppLayout: React.FC = () => {
         onAddProject={handleAddProject}
         onEditProject={handleEditProject}
         onDeleteProject={handleDeleteProject}
+        onSelectSummary={handleSummarySelect}
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
         className="fixed top-0 left-0 z-40 lg:hidden"
