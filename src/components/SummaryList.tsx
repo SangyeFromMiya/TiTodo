@@ -98,28 +98,32 @@ export const SummaryList: React.FC<SummaryListProps> = ({
     <div className="flex-1 flex flex-col h-full bg-white dark:bg-gray-900">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {title}
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
-              {description}
-            </p>
+        <div className="flex flex-col gap-4 mb-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {title}
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">
+                {description}
+              </p>
+            </div>
           </div>
           
-          <button
-            onClick={handleSmartSummary}
-            disabled={isGenerating || tasks.length === 0}
-            className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isGenerating ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Sparkles className="w-4 h-4" />
-            )}
-            <span>{t('app.smartSummary') || 'Smart Summary'}</span>
-          </button>
+          <div className="flex justify-center">
+            <button
+              onClick={handleSmartSummary}
+              disabled={isGenerating || tasks.length === 0}
+              className="flex items-center gap-2 px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-md transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
+              {isGenerating ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Sparkles className="w-4 h-4" />
+              )}
+              <span className="font-medium">{t('app.smartSummary') || 'Smart Summary'}</span>
+            </button>
+          </div>
         </div>
 
         {/* AI Summary Result */}
