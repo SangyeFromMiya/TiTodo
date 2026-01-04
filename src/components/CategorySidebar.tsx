@@ -18,6 +18,7 @@ interface CategorySidebarProps {
   onToggle: () => void;
   className?: string;
   onSelectSummary: (type: 'weekly-summary' | 'monthly-summary' | 'yearly-summary') => void;
+  onSelectCategory: (categoryId: string) => void;
 }
 
 const sidebarVariants = {
@@ -51,6 +52,7 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
   onToggle,
   className,
   onSelectSummary,
+  onSelectCategory,
 }) => {
   const { t } = useLanguage();
   const { user, signOut } = useAuth();
@@ -211,19 +213,30 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
               return (
                 <div key={category.id} className="space-y-1">
                   {/* Category Header */}
-                  <button
-                    onClick={() => toggleCategory(category.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-150 ${
+                  <div
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-150 cursor-pointer ${
                       currentFilter === category.id
                         ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-medium border-l-4 border-red-500'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
+                    <div 
+                      className="flex items-center gap-3 flex-1"
+                      onClick={() => {
+                        onSelectCategory(category.id);
+                        if (window.innerWidth < 1024) onToggle();
+                      }}
+                    >
                       <span className="text-lg">{category.icon}</span>
                       <span className="font-medium">{getCategoryName(category)}</span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div 
+                      className="flex items-center gap-2 p-1 hover:bg-black/5 dark:hover:bg-white/10 rounded"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleCategory(category.id);
+                      }}
+                    >
                       {categoryTaskCount > 0 && (
                         <span className="text-sm text-gray-400 dark:text-gray-500">
                           {categoryTaskCount}
@@ -235,7 +248,7 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
                         <ChevronRight className="w-4 h-4" />
                       )}
                     </div>
-                  </button>
+                  </div>
 
                   {/* Projects in Category */}
                   <AnimatePresence>

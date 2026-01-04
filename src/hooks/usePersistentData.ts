@@ -63,6 +63,7 @@ export function usePersistentData() {
                   priority: t.priority,
                   createdAt: new Date(t.created_at),
                   updatedAt: new Date(t.updated_at),
+                  projectId: t.project_id,
                 })),
             })),
         }));

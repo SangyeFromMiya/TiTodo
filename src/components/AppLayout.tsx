@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CategorySidebar } from './CategorySidebar';
 import { ProjectModal } from './ProjectModal';
 import { TaskList } from './TaskList';
+import { SummaryList } from './SummaryList';
 import { TopBar } from './TopBar';
 import { Menu } from 'lucide-react';
 import { Project, Task, TaskFilter } from '../types';
@@ -49,6 +50,11 @@ export const AppLayout: React.FC = () => {
   const handleSummarySelect = (type: 'weekly-summary' | 'monthly-summary' | 'yearly-summary') => {
     setCurrentFilter(type);
     setCurrentProject(null); // Clear current project to show summary view
+  };
+
+  const handleCategorySelect = (categoryId: string) => {
+    setCurrentFilter(categoryId as TaskFilter);
+    setCurrentProject(null);
   };
 
   const handleAddProject = (categoryId: string) => {
@@ -252,6 +258,14 @@ export const AppLayout: React.FC = () => {
       }
       else if (currentFilter === 'all') {
         title = t('app.allTasks');
+      } else {
+         // Try to find category name
+         const category = categories.find(c => c.id === currentFilter);
+         if (category) {
+             title = category.name === 'Personal' ? t('app.personal') : 
+                     category.name === 'Work' ? t('app.work') : category.name;
+             description = `All tasks in ${title}`;
+         }
       }
 
       if (currentFilter === 'weekly-summary' || currentFilter === 'monthly-summary' || currentFilter === 'yearly-summary') {
@@ -270,6 +284,23 @@ export const AppLayout: React.FC = () => {
           } else if (currentFilter === 'yearly-summary') {
               filteredTasks = filteredTasks.filter(t => t.updatedAt >= oneYearAgo);
           }
+      } else {
+        // Normal views: exclude completed tasks unless filter is 'completed'
+        if (currentFilter !== 'completed') {
+           filteredTasks = filteredTasks.filter(t => !t.completed);
+        } else {
+           filteredTasks = filteredTasks.filter(t => t.completed);
+        }
+
+        // Filter by category if currentFilter is a category ID
+        if (currentFilter !== 'all' && currentFilter !== 'completed' && !currentFilter.includes('summary')) {
+             // Find category
+             const category = categories.find(c => c.id === currentFilter);
+             if (category) {
+                 const categoryTaskIds = new Set(category.projects.flatMap(p => p.tasks.map(t => t.id)));
+                 filteredTasks = filteredTasks.filter(t => categoryTaskIds.has(t.id));
+             }
+        }
       }
 
       // Sort by completion/update date desc
@@ -318,6 +349,7 @@ export const AppLayout: React.FC = () => {
           onEditProject={handleEditProject}
           onDeleteProject={handleDeleteProject}
           onSelectSummary={handleSummarySelect}
+          onSelectCategory={handleCategorySelect}
           isOpen={true}
           onToggle={() => {}}
         />
@@ -333,6 +365,7 @@ export const AppLayout: React.FC = () => {
         onEditProject={handleEditProject}
         onDeleteProject={handleDeleteProject}
         onSelectSummary={handleSummarySelect}
+        onSelectCategory={handleCategorySelect}
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
         className="fixed top-0 left-0 z-40 lg:hidden"
@@ -350,24 +383,33 @@ export const AppLayout: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {!isLoading && (
-          <TaskList
-            project={projectToShow}
-            onAddTask={handleAddTask}
-            onToggleTask={handleToggleTask}
-            onUpdateTask={(taskId, title) => {
-              const location = findTaskLocation(taskId);
-              if (!location) return;
-              updateTask(location.categoryId, location.projectId, taskId, { title });
-              if (currentProject?.id === location.projectId) {
-                setCurrentProject(prev => prev ? {
-                  ...prev,
-                  tasks: prev.tasks.map(t => t.id === taskId ? { ...t, title, updatedAt: new Date() } : t)
-                } : null);
-              }
-            }}
-            onDeleteTask={handleDeleteTask}
-            filter={currentProject ? currentFilter : 'all'}
-          />
+          currentFilter.includes('summary') ? (
+            <SummaryList
+              title={projectToShow.name}
+              description={projectToShow.description || ''}
+              tasks={projectToShow.tasks}
+              projects={categories.flatMap(c => c.projects)}
+            />
+          ) : (
+            <TaskList
+              project={projectToShow}
+              onAddTask={handleAddTask}
+              onToggleTask={handleToggleTask}
+              onUpdateTask={(taskId, title) => {
+                const location = findTaskLocation(taskId);
+                if (!location) return;
+                updateTask(location.categoryId, location.projectId, taskId, { title });
+                if (currentProject?.id === location.projectId) {
+                  setCurrentProject(prev => prev ? {
+                    ...prev,
+                    tasks: prev.tasks.map(t => t.id === taskId ? { ...t, title, updatedAt: new Date() } : t)
+                  } : null);
+                }
+              }}
+              onDeleteTask={handleDeleteTask}
+              filter={currentProject ? currentFilter : 'all'}
+            />
+          )
         )}
       </div>
 

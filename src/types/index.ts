@@ -5,6 +5,7 @@ export interface Task {
   priority: 'high' | 'medium' | 'low';
   createdAt: Date;
   updatedAt: Date;
+  projectId?: string;
 }
 
 export interface Project {
