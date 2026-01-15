@@ -393,6 +393,7 @@ export const AppLayout: React.FC = () => {
           ) : (
             <TaskList
               project={projectToShow}
+              allProjects={categories.flatMap(c => c.projects)}
               onAddTask={handleAddTask}
               onToggleTask={handleToggleTask}
               onUpdateTask={(taskId, title) => {
