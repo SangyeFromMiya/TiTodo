@@ -98,19 +98,17 @@ export const SummaryList: React.FC<SummaryListProps> = ({
     <div className="flex-1 flex flex-col h-full bg-white dark:bg-gray-900">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6">
-        <div className="flex flex-col gap-4 mb-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                {title}
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
-                {description}
-              </p>
-            </div>
+        <div className="flex flex-col items-center justify-center text-center gap-4 mb-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              {title}
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1 max-w-2xl mx-auto">
+              {description}
+            </p>
           </div>
           
-          <div className="flex justify-center">
+          <div>
             <button
               onClick={handleSmartSummary}
               disabled={isGenerating || tasks.length === 0}
